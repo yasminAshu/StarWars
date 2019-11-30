@@ -66,7 +66,7 @@ class Login extends React.Component {
                     <input type="password" placeholder="password" value={this.state.password} onChange={this.handlePassword} />
                     <button onClick={this.login} >login</button>
                 </div>
-                {!this.state.userFound && <div class="error">User id or password is incorrect</div>
+                {!this.state.userFound && <div className="error">User id or password is incorrect</div>
 }            </div>
         )
     }
