@@ -1,15 +1,13 @@
 import React from 'react';
 import { SearchResult } from './SearchResult'
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom'
 class Search extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             planets: [],
             filterPlanets: [],
-            logout: false,
-            count:0,
-            timeLeft:5
+            logout: false
         }
     }
 
@@ -33,30 +31,16 @@ class Search extends React.Component {
         }
     }
 
-   timer = ()=> {
-    this.setState({timeLeft:this.state.timeLeft-1})
-    console.log("timer",this.state.timeLeft)
-    if(this.state.timeLeft == 0){
-        clearInterval(this.timer)   
-    }
- 
-   }
-    /**
+
+  /**
    * 
    *@discription - This function is will fetch the value of all the planet
    @param e- Target value of the search box
    */
     search = (e) => {
-      
         let search = e.target.value;
-        const { planets,count} = this.state;
-       
-        console.log("count",count)
-        if(count === 0){
-          this.timer = setInterval(this.timer,1000);
-        }
-    
-        if (search !== "" && count < 14 && this.state.timeLef>0) {
+        const { planets } = this.state;
+        if (search !== "") {
             let filterPlanets = planets.filter((planet) => {
                 return planet.name.toLowerCase().includes(search.toLowerCase())
             })
@@ -64,8 +48,6 @@ class Search extends React.Component {
         } else {
             this.setState({ filterPlanets: [] })
         }
-
-        this.setState({count:count+1})
 
     }
 
@@ -83,7 +65,6 @@ class Search extends React.Component {
    */
     render() {
         const maxPopulation = this.state.filterPlanets.length !== 0 && this.state.filterPlanets.reduce(function (prev, current) {
-            console.log(typeof prev.population, current.population)
             return (parseInt(prev.population) > parseInt(current.population)) ? prev : current
         })
         if (this.state.logout) {

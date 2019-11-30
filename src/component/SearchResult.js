@@ -25,7 +25,6 @@ export const SearchResult = ({ maxPopulation, planets }) => {
                     <span className="search-head"><strong>Population</strong></span>
                 </div>}
                 {planets && planets.map((planet, index) => {
-                    console.log(planet)
                     return (
                         <div key = {index} className={`grid-container ${maxPopulation.name === planet.name ? "active" : ""}`} onClick={() => showModal(planet)}>
                             <span >{planet.name}</span>
