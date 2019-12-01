@@ -1,13 +1,16 @@
 import React from 'react';
 import { SearchResult } from './SearchResult'
 import { Redirect } from 'react-router-dom'
+import RootContect from './Contexts'
 class Search extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             planets: [],
             filterPlanets: [],
-            logout: false
+            logout: false,
+            count:0,
+            timeLeft:60
         }
     }
 
@@ -31,23 +34,41 @@ class Search extends React.Component {
         }
     }
 
-
+    /**
+   * 
+   *@discription - This function is for timer to check number of count in a minute
+   @param e- Target value of the search box
+   */
+    
+   timer = ()=> {
+    this.setState({timeLeft:this.state.timeLeft-1})
+    if(this.state.timeLeft == 0){
+        clearInterval(this.timer)   
+    }
+   }
+   
   /**
    * 
    *@discription - This function is will fetch the value of all the planet
    @param e- Target value of the search box
    */
-    search = (e) => {
+    search = (e,userName) => {
         let search = e.target.value;
-        const { planets } = this.state;
-        if (search !== "") {
+        const { planets,count } = this.state;
+        if(count === 0){
+            this.timer = setInterval(this.timer,1000);
+          }
+        if (search !== "" && this.state.timeLeft !==0 && count<14  || userName === "Luke Skywalker") {
             let filterPlanets = planets.filter((planet) => {
                 return planet.name.toLowerCase().includes(search.toLowerCase())
             })
-            this.setState({ filterPlanets: filterPlanets })
-        } else {
-            this.setState({ filterPlanets: [] })
+            this.setState({ filterPlanets: filterPlanets,count:count+1 })
+        }  else if(this.state.timeLeft === 0){
+            this.setState({count:0,timeLeft:60})
+        }else {
+            this.setState({ filterPlanets: [] ,count:count+1})
         }
+       
 
     }
 
@@ -71,14 +92,19 @@ class Search extends React.Component {
             return <Redirect to='/' />;
         }
         return (
-            <div className="main-container">
-                <button onClick={this.logout} className="logout">Logout</button>
-                <div className="search-container">
-                    <input type="text" id="search-bar" placeholder="Search Planet...." onChange={this.search} />
-                    <i className="fa fa-search search-icon" aria-hidden="true"></i>
-                </div>
-                {this.state.filterPlanets.length !== 0 && <SearchResult maxPopulation={maxPopulation} planets={this.state.filterPlanets} />}
-            </div>
+            <RootContect.Consumer>
+                {context => (
+                       <div className="main-container">
+                       <button onClick={this.logout} className="logout">Logout</button>
+                       <div className="search-container">
+                               <input type="text" id="search-bar" placeholder="Search Planet...." onChange={(e)=>this.search(e,context.userName)} />
+                           <i className="fa fa-search search-icon" aria-hidden="true"></i>
+                       </div>
+                       {this.state.count == 14 && <div className="error">Only 15 serches Allowed in a minute</div>}
+                       {this.state.filterPlanets.length !== 0 && <SearchResult maxPopulation={maxPopulation} planets={this.state.filterPlanets} />}
+                   </div>
+                )}
+         </RootContect.Consumer>
 
         )
     }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 class Login extends React.Component {
     constructor(props) {
         super(props)
@@ -45,6 +46,7 @@ class Login extends React.Component {
             const data = await response.json();
             const found = data.results.some(el => el.name === this.state.userName && el.birth_year === this.state.password);
             if (found) {
+                this.props.setUser(this.state.userName)
                 this.props.history.push('/Search')
             }else{
                 this.setState({ userFound: false })
@@ -72,4 +74,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login
+export default withRouter (Login)
